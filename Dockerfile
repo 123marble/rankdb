@@ -5,7 +5,7 @@ LABEL maintainer="vivino.com"
 ENV GOPATH /go
 ENV CGO_ENABLED 0
 ENV GO111MODULE on
-ENV BASEPACKAGE github.com/Vivino/rankdb
+ENV BASEPACKAGE github.com/123marble/rankdb
 ENV PACKAGEPATH /go/src/${BASEPACKAGE}/
 ENV GOPROXY https://proxy.golang.org
 
