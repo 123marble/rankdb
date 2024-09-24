@@ -113,18 +113,40 @@ func (r RankedElement) FullUpdate(id rankdb.ListID) *app.RankdbElementFullUpdate
 		Above: Elements{In: in.Above}.ToRanked(in.FromTop-len(in.Above), in.FromBottom+len(in.Above), id),
 	}
 
-	return &app.RankdbElementFullUpdate{
-		ID:           uint64(in.ID),
-		ListID:       string(id),
-		Payload:      in.Payload,
-		FromBottom:   in.FromBottom,
-		FromTop:      in.FromTop,
-		Score:        in.Score,
-		TieBreaker:   in.TieBreaker,
-		UpdatedAt:    time.Unix(int64(in.Updated), 0),
-		Neighbors:    &n,
-		PreviousRank: RankedElement{In: in.Before}.Default(id),
+	shiftedBoundaries := []*app.ShiftedBoundary{}
+	for _, sb := range in.ShiftedBoundaries {
+		shiftedBoundaries = append(shiftedBoundaries, &app.ShiftedBoundary{
+			PrevID:      uint64(sb.Before.ID),
+			NewID:       uint64(sb.ID),
+			PrevFromTop: sb.Before.FromTop,
+			NewFromTop:  sb.FromTop,
+		})
 	}
+
+	return &app.RankdbElementFullUpdate{
+		ID:                uint64(in.ID),
+		ListID:            string(id),
+		Payload:           in.Payload,
+		FromBottom:        in.FromBottom,
+		FromTop:           in.FromTop,
+		Score:             in.Score,
+		TieBreaker:        in.TieBreaker,
+		UpdatedAt:         time.Unix(int64(in.Updated), 0),
+		Neighbors:         &n,
+		PreviousRank:      RankedElement{In: in.Before}.Default(id),
+		ShiftedBoundaries: shiftedBoundaries,
+	}
+}
+
+type ShiftedBoundary struct {
+	PrevID      uint64
+	NewID       uint64
+	PrevFromTop int
+	NewFromTop  int
+}
+
+type ShiftedBoundaries struct {
+	In []ShiftedBoundaries
 }
 
 type RankedElements struct {

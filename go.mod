@@ -1,6 +1,8 @@
 module github.com/Vivino/rankdb
 
-go 1.18
+go 1.22.0
+
+toolchain go1.23.1
 
 require (
 	github.com/BurntSushi/toml v1.3.2
@@ -24,7 +26,7 @@ require (
 	github.com/ugorji/go/codec v1.1.7
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
-	golang.org/x/tools v0.13.0
+	golang.org/x/tools v0.25.0
 	gopkg.in/DataDog/dd-trace-go.v1 v1.37.0
 )
 
@@ -164,13 +166,13 @@ require (
 	gitlab.com/digitalxero/go-conventional-commit v1.0.7 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	gocloud.dev v0.24.0 // indirect
-	golang.org/x/crypto v0.21.0 // indirect
-	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/mod v0.21.0 // indirect
+	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/oauth2 v0.10.0 // indirect
-	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.126.0 // indirect

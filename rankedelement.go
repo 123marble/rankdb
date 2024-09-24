@@ -27,9 +27,14 @@ type RankedElement struct {
 
 	// Before contains the element placement before update.
 	Before *RankedElement `json:"before,omitempty"`
+
+	// ShiftedBoundaries contains the elements that sat on a pre-defined boundary
+	// that was shifted  by the insertion/removal of the current element.
+	ShiftedBoundaries []RankedElement `json:"shiftedBoundaries,omitempty"`
 }
 
 // Rank contains the element rank without neighbors.
+//
 //msgp:ignore Rank
 type Rank struct {
 	FromTop    int

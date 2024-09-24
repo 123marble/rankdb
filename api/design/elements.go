@@ -238,6 +238,12 @@ func withResultsParam() {
 	})
 }
 
+var ShiftedBoundary = MediaType("application/vnd.rankdb.shifted_boundaries+json", func() {
+	Attribute("boundary", Integer, "The boundary that was shifted")
+	Attribute("prev_from_top", Integer, "Previous position from top")
+	Attribute("new_from_top", Integer, "New position from top")
+})
+
 // Element is an element on a rank list.
 var ElementRank = MediaType("application/vnd.rankdb.element+json", func() {
 	Description("List Element")
@@ -278,6 +284,7 @@ var ElementRank = MediaType("application/vnd.rankdb.element+json", func() {
 		})
 
 		Attribute("previous_rank", "application/vnd.rankdb.element+json", "Rank of element before update")
+		Attribute("shifted_boundaries", CollectionOf("application/vnd.rankdb.shifted_boundaries+json"), "Elements that had their boundaries shifted due to the update")
 
 		Required("id", "from_top", "from_bottom", "score")
 		Required("list_id", "payload", "updated_at", "tie_breaker")
@@ -309,6 +316,7 @@ var ElementRank = MediaType("application/vnd.rankdb.element+json", func() {
 	View("full-update", func() {
 		full()
 		Attribute("previous_rank")
+		Attribute("shifted_boundaries")
 	})
 })
 

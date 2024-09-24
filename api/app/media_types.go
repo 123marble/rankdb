@@ -155,6 +155,15 @@ func (mt *RankdbCallback) Validate() (err error) {
 	return
 }
 
+type ShiftedBoundariesCollection []*ShiftedBoundary
+
+type ShiftedBoundary struct {
+	PrevID      uint64 `form:"prev_id" json:"prev_id" yaml:"prev_id" xml:"prev_id"`
+	NewID       uint64 `form:"new_id" json:"new_id" yaml:"new_id" xml:"new_id"`
+	PrevFromTop int    `form:"prev_from_top" json:"prev_from_top" yaml:"prev_from_top" xml:"prev_from_top"`
+	NewFromTop  int    `form:"new_from_top" json:"new_from_top" yaml:"new_from_top" xml:"new_from_top"`
+}
+
 // List Element (default view)
 //
 // Identifier: application/vnd.rankdb.element+json; view=default
@@ -336,6 +345,8 @@ type RankdbElementFullUpdate struct {
 	TieBreaker uint32 `form:"tie_breaker" json:"tie_breaker" yaml:"tie_breaker" xml:"tie_breaker"`
 	// Date of last update
 	UpdatedAt time.Time `form:"updated_at" json:"updated_at" yaml:"updated_at" xml:"updated_at"`
+	// Shifted boundaries
+	ShiftedBoundaries ShiftedBoundariesCollection `form:"shifted_boundaries,omitempty" json:"shifted_boundaries,omitempty" yaml:"shifted_boundaries,omitempty" xml:"shifted_boundaries,omitempty"`
 }
 
 // Validate validates the RankdbElementFullUpdate media type instance.

@@ -26,6 +26,7 @@ import (
 
 // List contains the segments representing a list
 // as well as the index to look up segments by object ID.
+//
 //msgp:tuple List
 type List struct {
 	sync.RWMutex `msg:"-" json:"-"`
@@ -55,6 +56,7 @@ type List struct {
 
 // ListOption can be used to specify options when creating a list.
 // Use either directly or use WithListOption.
+//
 //msgp:ignore ListOption
 type ListOption func(*listOptions) error
 
@@ -1493,7 +1495,69 @@ func (l *List) UpdateElements(ctx context.Context, bs blobstore.Store, elems Ele
 			updated[i] = elem
 		}
 	}
+	boundaries := []int{0, 9, 99, 999}
 
+	for i := range updated {
+		elem := &updated[i]
+		elem.ShiftedBoundaries = []RankedElement{}
+		for _, boundary := range boundaries {
+			sumShift := 0
+			if elem.Before != nil && elem.Before.FromTop <= boundary {
+				sumShift -= 1
+			}
+			if elem.FromTop <= boundary {
+				sumShift += 1
+			}
+			if sumShift == -1 {
+				// Get the element at the boundary
+				boundaryElems, err := l.getRankTop(ctx, bs, boundary, 1, segs)
+				if err != nil {
+					log.Error(ctx, "Error getting boundary element", "error", err.Error(), "boundary", boundary)
+					continue
+				}
+				if len(boundaryElems) == 0 {
+					log.Info(ctx, "No element found at boundary", "boundary", boundary)
+					continue
+				}
+				boundaryElem := boundaryElems[0]
+				before := RankedElement{
+					Element:    boundaryElem,
+					FromBottom: 0,
+					FromTop:    boundary + 1,
+				}
+				newElem := RankedElement{
+					Element:    boundaryElem,
+					FromBottom: 0,
+					FromTop:    boundary,
+					Before:     &before,
+				}
+				elem.ShiftedBoundaries = append(elem.ShiftedBoundaries, newElem)
+			} else if sumShift == 1 {
+				boundaryElems, err := l.getRankTop(ctx, bs, boundary+1, 1, segs)
+				if err != nil {
+					log.Error(ctx, "Error getting boundary element", "error", err.Error(), "boundary", boundary)
+					continue
+				}
+				if len(boundaryElems) == 0 {
+					log.Info(ctx, "No element found at boundary", "boundary", boundary)
+					continue
+				}
+				boundaryElem := boundaryElems[0]
+				before := RankedElement{
+					Element:    boundaryElem,
+					FromBottom: 0,
+					FromTop:    boundary,
+				}
+				newElem := RankedElement{
+					Element:    boundaryElem,
+					FromBottom: 0,
+					FromTop:    boundary + 1,
+					Before:     &before,
+				}
+				elem.ShiftedBoundaries = append(elem.ShiftedBoundaries, newElem)
+			}
+		}
+	}
 	l.checkSplit(ctx, bs, segs)
 	return updated, l.saveSegments(ctx, bs, segs)
 }
